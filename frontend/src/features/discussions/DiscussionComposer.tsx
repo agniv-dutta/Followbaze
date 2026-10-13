@@ -81,9 +81,10 @@ export function DiscussionComposer({ leadId, onCreated }: DiscussionComposerProp
           type="datetime-local"
           value={followUp}
           onChange={(event) => setFollowUp(event.target.value)}
+          aria-describedby="discussion-follow-up-hint"
           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100 sm:w-auto"
         />
-        <p className="mt-1 text-xs text-slate-400">
+        <p id="discussion-follow-up-hint" className="mt-1 text-xs text-slate-400">
           Leave empty to keep the existing reminder.
         </p>
       </div>

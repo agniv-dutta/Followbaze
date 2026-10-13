@@ -87,6 +87,12 @@ export function LeadDashboard() {
           onAddLead={() => setAddOpen(true)}
         />
 
+        <p role="status" aria-live="polite" className="sr-only">
+          {loading
+            ? "Loading leads…"
+            : `${leads.length} lead${leads.length === 1 ? "" : "s"} shown`}
+        </p>
+
         {error && leads.length > 0 ? (
           <p
             role="alert"
@@ -101,7 +107,7 @@ export function LeadDashboard() {
         ) : showInitialLoading ? (
           <LeadListSkeleton />
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6" aria-busy={loading}>
             <FollowUpSection
               tone="overdue"
               title="Overdue follow-ups"
@@ -126,6 +132,11 @@ export function LeadDashboard() {
                 <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">
                   {rest.length}
                 </span>
+                {loading ? (
+                  <span className="ml-1 text-xs font-medium text-slate-400" aria-hidden="true">
+                    Updating…
+                  </span>
+                ) : null}
               </div>
 
               {rest.length === 0 ? (

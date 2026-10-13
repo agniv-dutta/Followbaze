@@ -1,4 +1,4 @@
-"""Repeatable demo-data seed for LeadFlow.
+"""Repeatable demo-data seed for Followbaze.
 
 Usage (from the ``backend`` directory)::
 
@@ -155,7 +155,7 @@ def seed(reset: bool = False) -> int:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Seed LeadFlow demo data.")
+    parser = argparse.ArgumentParser(description="Seed Followbaze demo data.")
     parser.add_argument(
         "--reset",
         action="store_true",

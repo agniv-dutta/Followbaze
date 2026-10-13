@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LeadFlow — Sales pipeline & follow-ups",
+  title: "Followbaze — Sales pipeline & follow-ups",
   description:
     "A lightweight CRM for sales representatives to manage leads, track discussions and schedule follow-ups.",
 };

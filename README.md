@@ -1,4 +1,4 @@
-# LeadFlow
+# Followbaze
 
 A lightweight CRM for sales representatives to **manage leads, track discussions,
 update lead status, and schedule follow-ups** — on a single screen.
@@ -109,7 +109,7 @@ Copy `.env.example` to `.env` and adjust. Key variables:
 | Variable | Default | Purpose |
 |----------|---------|---------|
 | `APP_ENV` | `development` | Runtime environment |
-| `DATABASE_URL` | `sqlite:///./leadflow.db` | Database connection |
+| `DATABASE_URL` | `sqlite:///./followbaze.db` | Database connection |
 | `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
 | `APP_TIMEZONE` | `Asia/Kolkata` | Timezone for "today" grouping / seed |
 | `LOG_LEVEL` | `INFO` | Logging level |
@@ -186,7 +186,7 @@ docker compose up --build
 # Frontend: http://localhost:3000   Backend: http://localhost:8000
 ```
 
-- Backend applies migrations on start and stores SQLite in the `leadflow-data`
+- Backend applies migrations on start and stores SQLite in the `followbaze-data`
   volume (persistent).
 - Frontend waits for the backend health check (`condition: service_healthy`)
   rather than a fixed sleep.

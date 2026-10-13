@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ApiError, api } from "@/lib/api";
+import { api } from "@/lib/api";
 import type { Lead } from "@/types";
 
 function jsonResponse(body: unknown, status = 200): Response {

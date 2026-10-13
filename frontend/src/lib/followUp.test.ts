@@ -45,4 +45,22 @@ describe("classifyFollowUp", () => {
     // 19:00Z is 00:30 IST on the 16th: same local day but already past.
     expect(classifyFollowUp("2026-01-15T19:00:00.000Z", now, IST)).toBe("overdue");
   });
+
+  it("keeps tomorrow as upcoming even when now is late in the local day", () => {
+    // 23:00 IST on the 15th (17:30Z). Adding a fixed 24h+ would reach the 17th,
+    // so a naive implementation would wrongly bucket tomorrow as due_today.
+    const now = new Date("2026-01-15T17:30:00.000Z");
+    expect(classifyFollowUp("2026-01-16T02:30:00.000Z", now, IST)).toBe("upcoming");
+    // 18:00Z is 23:30 IST, still later today -> due_today.
+    expect(classifyFollowUp("2026-01-15T18:00:00.000Z", now, IST)).toBe("due_today");
+    // 18:30Z is exactly midnight IST on the 16th -> upcoming, not due today.
+    expect(classifyFollowUp("2026-01-15T18:30:00.000Z", now, IST)).toBe("upcoming");
+  });
+
+  it("rolls the next-day boundary across month and year ends", () => {
+    const monthEnd = new Date("2026-01-31T17:30:00.000Z"); // 23:00 IST, 31 Jan
+    expect(classifyFollowUp("2026-02-01T02:30:00.000Z", monthEnd, IST)).toBe("upcoming");
+    const yearEnd = new Date("2026-12-31T17:30:00.000Z"); // 23:00 IST, 31 Dec
+    expect(classifyFollowUp("2027-01-01T02:30:00.000Z", yearEnd, IST)).toBe("upcoming");
+  });
 });

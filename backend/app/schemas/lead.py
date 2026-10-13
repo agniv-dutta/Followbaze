@@ -41,10 +41,20 @@ class LeadUpdate(BaseModel):
 
     @field_validator("name")
     @classmethod
-    def _validate_name(cls, value: str | None) -> str | None:
+    def _validate_name(cls, value: str | None) -> str:
+        # An omitted name is skipped entirely; an explicit JSON null is invalid
+        # because ``leads.name`` is NOT NULL. Rejecting it here yields a 422
+        # instead of a late database IntegrityError.
         if value is None:
-            return None
+            raise ValueError("must not be null")
         return strip_required(value)
+
+    @field_validator("status")
+    @classmethod
+    def _validate_status(cls, value: LeadStatus | None) -> LeadStatus:
+        if value is None:
+            raise ValueError("must not be null")
+        return value
 
     @field_validator("company")
     @classmethod

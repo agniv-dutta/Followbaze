@@ -20,7 +20,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
 
-    app_name: str = "LeadFlow API"
+    app_name: str = "Followbaze API"
     app_version: str = "1.0.0"
     app_env: str = "development"
     debug: bool = False
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
 
     # SQLite by default for local development. Any SQLAlchemy URL is accepted.
-    database_url: str = "sqlite:///./leadflow.db"
+    database_url: str = "sqlite:///./followbaze.db"
 
     # Comma separated list of allowed browser origins.
     cors_origins: str = "http://localhost:3000"

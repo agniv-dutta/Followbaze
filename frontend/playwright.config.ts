@@ -54,6 +54,8 @@ export default defineConfig({
       env: {
         NEXT_PUBLIC_API_BASE_URL: API_URL,
         NEXT_PUBLIC_APP_TIMEZONE: "Asia/Kolkata",
+        // Isolate the dev build from any production `.next` output.
+        NEXT_DIST_DIR: ".next-e2e",
       },
     },
   ],

@@ -1,4 +1,18 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test as base, type Page } from "@playwright/test";
+
+type Fixtures = { consoleErrors: string[] };
+
+/** Fails a test if the browser logged any console error or uncaught exception. */
+const test = base.extend<Fixtures>({
+  consoleErrors: async ({ page }, use) => {
+    const errors: string[] = [];
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
+    page.on("pageerror", (error) => errors.push(error.message));
+    await use(errors);
+  },
+});
 
 function uniqueName(prefix: string): string {
   return `${prefix} ${Date.now()}`;
@@ -21,7 +35,10 @@ async function addLead(page: Page, name: string): Promise<void> {
   await expect(page.getByRole("button", { name: `Open ${name}` })).toBeVisible();
 }
 
-test("create lead, add discussion with follow-up, update and persist status", async ({ page }) => {
+test("create lead, add discussion with follow-up, update and persist status", async ({
+  page,
+  consoleErrors,
+}) => {
   const name = uniqueName("E2E Lead");
   const note = "E2E kickoff call notes";
 
@@ -59,9 +76,14 @@ test("create lead, add discussion with follow-up, update and persist status", as
   await expect(reopened.getByLabel("Update lead status")).toHaveValue("Qualified");
   await expect(reopened.getByText(note)).toBeVisible();
   await page.keyboard.press("Escape");
+
+  expect(consoleErrors, consoleErrors.join("\n")).toEqual([]);
 });
 
-test("overdue and today follow-ups are classified into their own sections", async ({ page }) => {
+test("overdue and today follow-ups are classified into their own sections", async ({
+  page,
+  consoleErrors,
+}) => {
   const overdueName = uniqueName("Overdue Lead");
   const todayName = uniqueName("Today Lead");
 
@@ -92,4 +114,6 @@ test("overdue and today follow-ups are classified into their own sections", asyn
 
   await expect(page.getByTestId("overdue-section").getByText(overdueName)).toBeVisible();
   await expect(page.getByTestId("today-section").getByText(todayName)).toBeVisible();
+
+  expect(consoleErrors, consoleErrors.join("\n")).toEqual([]);
 });

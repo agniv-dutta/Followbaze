@@ -57,12 +57,6 @@ function localMidnight(year: number, month: number, day: number, timeZone: strin
   return guess - offset;
 }
 
-/** The UTC instant at which the local calendar day of `date` begins. */
-function startOfLocalDay(date: Date, timeZone: string): number {
-  const { year, month, day } = zonedParts(date, timeZone);
-  return localMidnight(year, month, day, timeZone);
-}
-
 export function classifyFollowUp(
   iso: string | null | undefined,
   now: Date = new Date(),
@@ -76,9 +70,13 @@ export function classifyFollowUp(
   const nowMs = now.getTime();
   if (scheduledMs < nowMs) return "overdue";
 
-  const startToday = startOfLocalDay(now, timeZone);
-  const tomorrow = new Date(nowMs + 26 * 60 * 60 * 1000);
-  const startTomorrow = startOfLocalDay(tomorrow, timeZone);
+  // Derive both boundaries from today's local calendar date instead of adding a
+  // fixed number of hours to "now": a late-evening "now" plus 24+ hours jumps
+  // two midnights, which would misclassify tomorrow as today. `localMidnight`
+  // normalises out-of-range days (e.g. day 32) into the following month/year.
+  const { year, month, day } = zonedParts(now, timeZone);
+  const startToday = localMidnight(year, month, day, timeZone);
+  const startTomorrow = localMidnight(year, month, day + 1, timeZone);
 
   if (scheduledMs >= startToday && scheduledMs < startTomorrow) return "due_today";
   return "upcoming";

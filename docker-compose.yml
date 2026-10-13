@@ -5,14 +5,14 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-production}
       # Four slashes => absolute path inside the container.
-      DATABASE_URL: sqlite:////app/data/leadflow.db
+      DATABASE_URL: sqlite:////app/data/followbaze.db
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
       APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Kolkata}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       # Migrations run on startup, so no implicit table creation.
       AUTO_CREATE_TABLES: "false"
     volumes:
-      - leadflow-data:/app/data
+      - followbaze-data:/app/data
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     healthcheck:
@@ -46,4 +46,4 @@ services:
         condition: service_healthy
 
 volumes:
-  leadflow-data:
+  followbaze-data:

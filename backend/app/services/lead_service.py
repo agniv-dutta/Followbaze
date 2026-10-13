@@ -9,6 +9,7 @@ with two aggregated queries.
 from __future__ import annotations
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.core.errors import NotFoundError
@@ -133,7 +134,11 @@ def create_lead(db: Session, payload: LeadCreate) -> Lead:
         status=payload.status,
     )
     db.add(lead)
-    db.commit()
+    try:
+        db.commit()
+    except SQLAlchemyError:
+        db.rollback()
+        raise
     db.refresh(lead)
     return lead
 
@@ -143,6 +148,10 @@ def update_lead(db: Session, lead_id: int, payload: LeadUpdate) -> Lead:
     changes = payload.model_dump(exclude_unset=True)
     for field, value in changes.items():
         setattr(lead, field, value)
-    db.commit()
+    try:
+        db.commit()
+    except SQLAlchemyError:
+        db.rollback()
+        raise
     db.refresh(lead)
     return lead

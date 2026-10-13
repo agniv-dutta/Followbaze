@@ -32,11 +32,15 @@ export function LeadTimelineDialog({
   const [error, setError] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [savingStatus, setSavingStatus] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const now = useNow(30_000);
 
-  // Always fetch the latest persisted data when the dialog opens.
+  // Always fetch the latest persisted data when the dialog opens or reloads.
   useEffect(() => {
-    if (!open || leadId == null) return;
+    if (!open || leadId == null) {
+      setDetail(null);
+      return;
+    }
     let active = true;
     setLoading(true);
     setError(null);
@@ -56,7 +60,7 @@ export function LeadTimelineDialog({
     return () => {
       active = false;
     };
-  }, [open, leadId]);
+  }, [open, leadId, reloadKey]);
 
   async function handleStatusChange(status: LeadStatus) {
     if (!detail || savingStatus) return;
@@ -64,10 +68,9 @@ export function LeadTimelineDialog({
     setStatusError(null);
     try {
       const updated = await api.updateLead(detail.id, { status });
+      // Merge the full server-confirmed lead, preserving the loaded history.
       setDetail((previous) =>
-        previous
-          ? { ...previous, status: updated.status, updated_at: updated.updated_at }
-          : previous,
+        previous ? { ...previous, ...updated, discussions: previous.discussions } : previous,
       );
       onLeadUpdated(updated);
     } catch (caught) {
@@ -108,7 +111,7 @@ export function LeadTimelineDialog({
           <span className="text-sm">Loading lead…</span>
         </div>
       ) : error ? (
-        <ErrorState message={error} />
+        <ErrorState message={error} onRetry={() => setReloadKey((key) => key + 1)} />
       ) : detail ? (
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

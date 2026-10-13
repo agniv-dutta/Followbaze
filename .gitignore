@@ -15,14 +15,16 @@ venv/
 
 # SQLite databases
 *.db
+*.sqlite
 *.sqlite3
-backend/leadflow.db
+backend/followbaze.db
 backend/e2e.db
 backend/data/
 
 # --- Node / Next.js / frontend ---
 node_modules/
 frontend/.next/
+frontend/.next-e2e/
 frontend/out/
 frontend/coverage/
 frontend/playwright-report/
@@ -33,6 +35,14 @@ frontend/vitest-out.txt
 *.tsbuildinfo
 npm-debug.log*
 yarn-error.log*
+
+# Test and build outputs
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+build/
+dist/
 
 # --- Editors / OS ---
 .vscode/
