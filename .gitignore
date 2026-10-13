@@ -1,0 +1,42 @@
+# --- Python / backend ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment files (keep the example)
+.env
+.env.*
+!.env.example
+
+# SQLite databases
+*.db
+*.sqlite3
+backend/leadflow.db
+backend/e2e.db
+backend/data/
+
+# --- Node / Next.js / frontend ---
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+frontend/.turbo/
+frontend/tsconfig.tsbuildinfo
+frontend/vitest-out.txt
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

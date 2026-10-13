@@ -1,0 +1,49 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      # Four slashes => absolute path inside the container.
+      DATABASE_URL: sqlite:////app/data/leadflow.db
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Kolkata}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # Migrations run on startup, so no implicit table creation.
+      AUTO_CREATE_TABLES: "false"
+    volumes:
+      - leadflow-data:/app/data
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/api/v1/health').status==200 else 1)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Must be a URL the browser can reach (not a Docker service name).
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+        NEXT_PUBLIC_APP_TIMEZONE: ${NEXT_PUBLIC_APP_TIMEZONE:-Asia/Kolkata}
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+      NEXT_PUBLIC_APP_TIMEZONE: ${NEXT_PUBLIC_APP_TIMEZONE:-Asia/Kolkata}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        # Wait for a real health signal instead of a fixed sleep.
+        condition: service_healthy
+
+volumes:
+  leadflow-data:
