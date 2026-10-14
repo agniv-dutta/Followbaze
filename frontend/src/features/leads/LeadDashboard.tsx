@@ -67,6 +67,8 @@ export function LeadDashboard() {
 
   const hasActiveFilters = statusFilter !== "All" || search.trim() !== "";
   const showInitialLoading = loading && leads.length === 0;
+  // Leads already surfaced in a pinned section are not repeated in the main list.
+  const pinnedCount = overdue.length + dueToday.length;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -140,7 +142,11 @@ export function LeadDashboard() {
               </div>
 
               {rest.length === 0 ? (
-                hasActiveFilters ? (
+                pinnedCount > 0 ? (
+                  <p className="rounded-lg border border-dashed border-slate-300 bg-white/60 px-4 py-6 text-center text-sm text-slate-500">
+                    No other leads match your filters.
+                  </p>
+                ) : hasActiveFilters ? (
                   <EmptyState
                     title="No leads match your filters"
                     description="Try a different name or clear the status filter to see more leads."
